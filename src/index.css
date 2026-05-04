@@ -298,7 +298,13 @@ body {
   -webkit-appearance: none;
   appearance: none;
   height: 4px;
-  background: var(--surface-raised);
+  /* Webkit uses the ::-webkit-slider-runnable-track rule below.
+     Firefox reads the background on the element itself. */
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--vol, 80%),
+    var(--surface-raised) var(--vol, 80%)
+  );
   border-radius: 4px;
   outline: none;
   cursor: pointer;
@@ -321,7 +327,6 @@ body {
 .volume-slider::-webkit-slider-runnable-track {
   background: linear-gradient(
     to right,
-    var(--accent) 0%,
     var(--accent) var(--vol, 80%),
     var(--surface-raised) var(--vol, 80%)
   );
