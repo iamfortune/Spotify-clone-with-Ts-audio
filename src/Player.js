@@ -108,6 +108,7 @@ export default function Player({
           max="1"
           step="0.02"
           value={volume}
+          style={{ '--vol': `${volume * 100}%` }}
           onChange={e => onVolumeChange(parseFloat(e.target.value))}
           aria-label="Volume"
         />

@@ -21,6 +21,8 @@ export default function App() {
   const isRepeatRef = useRef(isRepeat);
   const songsLengthRef = useRef(0);
   const setCurrentSongRef = useRef(setCurrentSong);
+  // Signals the song-load effect to autoplay even when audio was previously paused
+  const autoPlayRef = useRef(false);
 
   useEffect(() => { isShuffleRef.current = isShuffle; }, [isShuffle]);
   useEffect(() => { isRepeatRef.current = isRepeat; }, [isRepeat]);
@@ -85,12 +87,13 @@ export default function App() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || songs.length === 0) return;
-    const wasPlaying = !audio.paused;
+    const shouldPlay = !audio.paused || autoPlayRef.current;
+    autoPlayRef.current = false;
     audio.src = songs[currentSong].audio_url;
     audio.load();
     setCurrentTime(0);
     setDuration(0);
-    if (wasPlaying) {
+    if (shouldPlay) {
       audio.play().catch(() => setIsPlaying(false));
     }
   }, [currentSong, songs]);
@@ -143,10 +146,9 @@ export default function App() {
   }, []);
 
   const handleSongSelect = useCallback(index => {
+    autoPlayRef.current = true;
     setCurrentSong(index);
     setIsPlaying(true);
-    // Immediately play after src update (handled by useEffect above)
-    setTimeout(() => audioRef.current?.play().catch(() => {}), 50);
   }, []);
 
   if (isLoading) {
